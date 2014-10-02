@@ -1,9 +1,14 @@
 package ca.ualberta.cs.lonelytwitter.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.lang.RuntimeException;
 
 import ca.ualberta.cs.lonelytwitter.AbstractTweet;
+import ca.ualberta.cs.lonelytwitter.Tweet;
 
 public class TweetListModel {
 
@@ -24,8 +29,14 @@ public class TweetListModel {
 	 *            Tweet to be appended to this list
 	 */
 	public void addTweet(AbstractTweet tweet) {
-		// TODO: Add only when it is not a duplicate
-		tweets.add(tweet);
+		
+		if( !this.hasTweet(tweet)){
+			tweets.add(tweet);
+		}
+		else{
+			throw new IllegalArgumentException("Tweet already in TweetListModel");
+		}
+		
 	}
 
 	/**
@@ -34,8 +45,7 @@ public class TweetListModel {
 	 * @return the number of tweets in this list
 	 */
 	public int getCount() {
-		// TODO: return real count
-		return 0;
+		return this.getList().size();
 	}
 
 	/**
@@ -46,7 +56,9 @@ public class TweetListModel {
 	 * @return true if this list contains the specified element
 	 */
 	public boolean hasTweet(AbstractTweet tweet) {
-		// TODO: Find if the tweet already exists
+		if(tweets.contains(tweet)){
+			return true;
+		}
 		return false;
 	}
 
@@ -58,7 +70,7 @@ public class TweetListModel {
 	 *            Tweet to be removed from this list, if present.
 	 */
 	public void removeTweet(AbstractTweet tweet) {
-		// TODO: Remove tweet
+		tweets.remove(tweet);
 	}
 
 	/**
@@ -68,8 +80,20 @@ public class TweetListModel {
 	 * @return an array containing the tweets of the list.
 	 */
 	public AbstractTweet[] getTweets() {
-		// TODO: return sorted list of tweets
-		return null;
+		AbstractTweet[] tweetArray = new AbstractTweet[this.getList().size()];
+		List<AbstractTweet> thisList = this.getList();
+		
+		Collections.sort(thisList, new Comparator<AbstractTweet>(){
+				public int compare(AbstractTweet t1, AbstractTweet t2){
+					return t1.getTweetBody().compareTo(t2.getTweetBody());
+				}
+
+			});
+		
+		for(int i = 0; i < tweetArray.length; i++){
+			tweetArray[i] = thisList.get(i);
+		}
+		return tweetArray;
 	}
 
 	/**
